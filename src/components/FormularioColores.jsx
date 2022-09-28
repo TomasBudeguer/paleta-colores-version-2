@@ -3,14 +3,20 @@ import { Form, Button, Card } from "react-bootstrap";
 import ListaColores from "./ListaColores";
 
 const FormularioColores = () => {
-    const [color, setColor] = useState('')
-    const [arregloColores, setArregloColores] = useState([])
+  const [color, setColor] = useState("");
+  const [arregloColores, setArregloColores] = useState([]);
 
-    const handleSubmit = (e)=> {
-        e.preventDefault()
-        setArregloColores([...arregloColores, color])
-        setColor('')
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setArregloColores([...arregloColores, color]);
+    setColor("");
+  };
+
+  const borrarColor = (nombre) => {
+    let arregloModif = arregloColores.filter((item) => (item !== nombre))
+    setArregloColores(arregloModif)
+  }
+
   return (
     <div>
       <Card>
@@ -28,7 +34,7 @@ const FormularioColores = () => {
                   type="text"
                   placeholder="Ingrese un color. Ej: azul"
                   className="w-100"
-                  onChange={(e)=> setColor(e.target.value)}
+                  onChange={(e) => setColor(e.target.value)}
                   value={color}
                 />
               </div>
@@ -41,7 +47,7 @@ const FormularioColores = () => {
           </Form>
         </Card.Body>
       </Card>
-      <ListaColores arregloColores={arregloColores}></ListaColores>
+      <ListaColores arregloColores={arregloColores} borrarColor={borrarColor}></ListaColores>
     </div>
   );
 };
