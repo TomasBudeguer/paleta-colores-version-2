@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
-import { Form, Button, Card } from "react-bootstrap";
+import { Form, Button, Card, Row, Col } from "react-bootstrap";
 import ListaColores from "./ListaColores";
 
 const FormularioColores = () => {
-  const coloresLocalStorage = JSON.parse(localStorage.getItem('arregloColoresKey')) || []
+  const colorRegExp = new RegExp(
+    /^#[a-zA-Z0-9]{6}|rgb\((?:\s*\d+\s*,){2}\s*[\d]+\)|rgba\((\s*\d+\s*,){3}[\d]+\)|hsl\(\s*\d+\s*(\s*\s*\d+){2}\)|hsla\(\s*\d+(\s*,\s*\d+\s*){2}\s*\s*[\d]+\)$/
+  );
+
+  const coloresLocalStorage =
+    JSON.parse(localStorage.getItem("arregloColoresKey")) || [];
   const [color, setColor] = useState("");
   const [arregloColores, setArregloColores] = useState(coloresLocalStorage);
 
-  useEffect(()=>{
-    localStorage.setItem('arregloColoresKey', JSON.stringify(arregloColores))
-  },[arregloColores])
+  useEffect(() => {
+    localStorage.setItem("arregloColoresKey", JSON.stringify(arregloColores));
+  }, [arregloColores]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setArregloColores([...arregloColores, color]);
-    setColor("");
+    if (colorRegExp.test(color)) {
+      setArregloColores([...arregloColores, color]);
+      setColor("");
+    } else {
+      alert("corregir los datos");
+    }
   };
 
   const borrarColor = (nombre) => {
@@ -29,20 +38,28 @@ const FormularioColores = () => {
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicColor">
               <Form.Label>Administrar colores</Form.Label>
-              <div className="d-flex">
-                <img
-                  src="https://quiz.upsocl.com/q/wp-content/uploads/2016/11/mm3.jpg"
-                  alt="color"
-                  className="me-4"
-                />
-                <Form.Control
-                  type="text"
-                  placeholder="Ingrese un color. Ej: azul"
-                  className="w-100"
-                  onChange={(e) => setColor(e.target.value)}
-                  value={color}
-                />
-              </div>
+              <Row>
+                <Col sm={12} md={4} lg={2} className="text-center">
+                  <img
+                    src="https://i.ibb.co/m665qp7/paleta-ejemplo.webp"
+                    alt="color"
+                    className="mb-2 w-100"
+                  />
+                </Col>
+                <Col sm={12} md={8} lg={10}>
+                  <Form.Control
+                    type="text"
+                    placeholder="Ingrese un color. En hex, rgb, rgba, hsl o hsla"
+                    className="w-100"
+                    onChange={(e) => setColor(e.target.value)}
+                    value={color}
+                  />
+                </Col>
+              </Row>
+              {/* <div className="d-flex">
+                
+                
+              </div> */}
             </Form.Group>
             <div className="d-flex justify-content-end">
               <Button variant="primary" type="submit">
