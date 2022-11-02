@@ -12,7 +12,7 @@ const FormularioColores = () => {
     consultarAPI().then((respuesta) => {
       setColor(respuesta);
     });
-  }, []);
+  }, [color]);
 
   const {
     register,
