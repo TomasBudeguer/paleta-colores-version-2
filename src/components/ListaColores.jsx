@@ -1,10 +1,11 @@
 import ItemColor from "./ItemColor";
 
-const ListaColores = ({arregloColores, borrarColor}) => {
+const ListaColores = ({color, setColor}) => {
+    
     return (
         <div className="row">
             {
-                arregloColores.map((color, posicion)=> <ItemColor key={posicion} nombreColor={color} borrarColor={borrarColor}></ItemColor>)
+                color.map((color)=> <ItemColor key={color._id} color={color} setColor={setColor}></ItemColor>)
             }
         </div>
     );

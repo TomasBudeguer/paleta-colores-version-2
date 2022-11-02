@@ -1,41 +1,50 @@
 import { useEffect, useState } from "react";
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
+import { consultarAPI, crearColorAPI } from "../helpers/queries";
 import ListaColores from "./ListaColores";
 
 const FormularioColores = () => {
-  const colorRegExp = new RegExp(
-    /^#[a-zA-Z0-9]{6}|rgb\((?:\s*\d+\s*,){2}\s*[\d]+\)|rgba\((\s*\d+\s*,){3}[\d]+\)|hsl\(\s*\d+\s*(\s*\s*\d+){2}\)|hsla\(\s*\d+(\s*,\s*\d+\s*){2}\s*\s*[\d]+\)$/
-  );
-
-  const coloresLocalStorage =
-    JSON.parse(localStorage.getItem("arregloColoresKey")) || [];
-  const [color, setColor] = useState("");
-  const [arregloColores, setArregloColores] = useState(coloresLocalStorage);
+  const [color, setColor] = useState([])
 
   useEffect(() => {
-    localStorage.setItem("arregloColoresKey", JSON.stringify(arregloColores));
-  }, [arregloColores]);
+    consultarAPI().then((respuesta) => {
+      setColor(respuesta);
+    });
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (colorRegExp.test(color)) {
-      setArregloColores([...arregloColores, color]);
-      setColor("");
-    } else {
-      alert("corregir los datos");
-    }
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      color: "",
+    },
+  });
 
-  const borrarColor = (nombre) => {
-    let arregloModif = arregloColores.filter((item) => item !== nombre);
-    setArregloColores(arregloModif);
+  const onSubmit = (datos) => {
+    crearColorAPI(datos).then((respuesta) => {
+      if (respuesta.status === 201) {
+        Swal.fire(
+          "Color creado",
+          "El color fue creado correctamente",
+          "success"
+        );
+        reset();
+      } else {
+        Swal.fire("Ocurrio un error", "Vuelva a intentarlo mas tarde", "error");
+      }
+    });
   };
 
   return (
     <div>
       <Card>
         <Card.Body>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3" controlId="formBasicColor">
               <Form.Label>Administrar colores</Form.Label>
               <Row>
@@ -51,15 +60,23 @@ const FormularioColores = () => {
                     type="text"
                     placeholder="Ingrese un color. En hex, rgb, rgba, hsl o hsla"
                     className="w-100"
-                    onChange={(e) => setColor(e.target.value)}
-                    value={color}
+                    {...register("color", {
+                      required: "Este dato es obligatorio",
+                      minLength: {
+                        value: 2,
+                        message: "Debe ingresar como minimo 5 caracteres",
+                      },
+                      maxLength: {
+                        value: 50,
+                        message: "Debe ingresar como maximo 50 caracteres",
+                      },
+                    })}
                   />
                 </Col>
               </Row>
-              {/* <div className="d-flex">
-                
-                
-              </div> */}
+              <Form.Text className="text-danger">
+            {errors.color?.message}
+          </Form.Text>
             </Form.Group>
             <div className="d-flex justify-content-end">
               <Button variant="primary" type="submit">
@@ -70,8 +87,8 @@ const FormularioColores = () => {
         </Card.Body>
       </Card>
       <ListaColores
-        arregloColores={arregloColores}
-        borrarColor={borrarColor}
+        color={color}
+        setColor={setColor}
       ></ListaColores>
     </div>
   );
