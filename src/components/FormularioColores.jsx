@@ -6,13 +6,13 @@ import { consultarAPI, crearColorAPI } from "../helpers/queries";
 import ListaColores from "./ListaColores";
 
 const FormularioColores = () => {
-  const [color, setColor] = useState([])
+  const [color, setColor] = useState([]);
 
   useEffect(() => {
     consultarAPI().then((respuesta) => {
       setColor(respuesta);
     });
-  }, [color]);
+  }, []);
 
   const {
     register,
@@ -34,6 +34,9 @@ const FormularioColores = () => {
           "success"
         );
         reset();
+        consultarAPI().then((respuesta) => {
+          setColor(respuesta);
+        });
       } else {
         Swal.fire("Ocurrio un error", "Vuelva a intentarlo mas tarde", "error");
       }
@@ -72,11 +75,11 @@ const FormularioColores = () => {
                       },
                     })}
                   />
+                  <Form.Text className="text-danger">
+                    {errors.color?.message}
+                  </Form.Text>
                 </Col>
               </Row>
-              <Form.Text className="text-danger">
-            {errors.color?.message}
-          </Form.Text>
             </Form.Group>
             <div className="d-flex justify-content-end">
               <Button variant="primary" type="submit">
@@ -86,10 +89,7 @@ const FormularioColores = () => {
           </Form>
         </Card.Body>
       </Card>
-      <ListaColores
-        color={color}
-        setColor={setColor}
-      ></ListaColores>
+      <ListaColores color={color} setColor={setColor}></ListaColores>
     </div>
   );
 };

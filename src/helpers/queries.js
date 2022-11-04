@@ -1,4 +1,6 @@
-const URL = "http://localhost:4000/apicolores/colores";
+// const URL = "http://localhost:4000/apicolores/colores"; //json-server
+const URL = process.env.REACT_APP_API_COLORES;
+console.log(URL)
 
 export const consultarAPI = async () => {
   try {
