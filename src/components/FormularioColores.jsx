@@ -73,6 +73,11 @@ const FormularioColores = () => {
                         value: 50,
                         message: "Debe ingresar como maximo 50 caracteres",
                       },
+                      pattern: {
+                        value:
+                        /^#[a-zA-Z0-9]{6}|rgb\((?:\s*\d+\s*,){2}\s*[\d]+\)|rgba\((\s*\d+\s*,){3}[\d]+\)|hsl\(\s*\d+\s*(\s*\s*\d+){2}\)|hsla\(\s*\d+(\s*,\s*\d+\s*){2}\s*\s*[\d]+\)$/,
+                        message: "Ingrese un color en formato hex, rgb, rgba, hsl o hsla",
+                      },
                     })}
                   />
                   <Form.Text className="text-danger">
